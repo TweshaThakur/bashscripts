@@ -57,3 +57,31 @@ do
 echo "$j"
 done
 done
+---------------------------------------------------------
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+echo "Usage: $0 <Target URL> <Wordlist>"
+exit 1
+fi
+
+TARGET=$1
+WORDLIST=$2
+
+if [ ! -f "$WORDLIST" ]; then
+echo "Wordlist not found"
+exit 1
+fi
+
+echo "Starting Directory Scan of $TARGET"
+
+while read -r directory; do
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$TARGET/$directory")
+
+if [ "$STATUS" != "404" ]; then
+echo "[$STATUS] $TARGET/$directory
+fi
+
+done < "$WORDLIST"
+
+echo "Scan Complete"
